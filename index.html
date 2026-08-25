@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="AI-Based Green Corridor Management — emergency vehicle route optimization and simulated signal coordination." />
+  <title>Green Corridor Command Center</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand-lockup">
+        <div class="brand-mark"><span></span><span></span><span></span></div>
+        <div>
+          <strong>FLOW<span>SYNC</span></strong>
+          <small>Emergency mobility</small>
+        </div>
+      </div>
+
+      <div class="workspace-switcher">
+        <div class="workspace-icon">CZ</div>
+        <div class="workspace-copy"><small>Workspace</small><strong>Code Zen · SIH 2026</strong></div>
+        <div class="chevron">⌄</div>
+      </div>
+
+      <div class="nav-label">COMMAND</div>
+      <nav class="sidebar-nav" aria-label="Primary navigation">
+        <button class="nav-item active" data-view="overview"><span class="nav-icon">◈</span><span>Overview</span><kbd>1</kbd></button>
+        <button class="nav-item" data-view="corridor"><span class="nav-icon">⌁</span><span>Live corridor</span><span class="nav-dot"></span></button>
+        <button class="nav-item" data-view="traffic"><span class="nav-icon">◒</span><span>Traffic intelligence</span></button>
+        <button class="nav-item" data-view="signals"><span class="nav-icon">◉</span><span>Signal simulation</span></button>
+        <button class="nav-item" data-view="reports"><span class="nav-icon">▤</span><span>Reports</span></button>
+      </nav>
+
+      <div class="nav-label second">SYSTEM</div>
+      <nav class="sidebar-nav">
+        <button class="nav-item" data-view="settings"><span class="nav-icon">⚙</span><span>Settings</span></button>
+        <button class="nav-item" data-view="help"><span class="nav-icon">?</span><span>Prototype guide</span></button>
+      </nav>
+
+      <div class="sidebar-spacer"></div>
+      <div class="prototype-card">
+        <div class="prototype-top"><span class="pulse-dot"></span><span>SIMULATION MODE</span></div>
+        <p>Prototype data is generated locally for demonstration.</p>
+        <button class="quiet-button" id="refreshData">Refresh simulation <span>↻</span></button>
+      </div>
+      <div class="sidebar-footer"><span>Team ID 864</span><span class="footer-status"><i></i>All systems nominal</span></div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <div class="breadcrumbs"><span>Operations</span><b>/</b><strong>Command center</strong></div>
+        <div class="topbar-actions">
+          <div class="live-chip"><span class="pulse-dot"></span> Live simulation</div>
+          <button class="icon-button" id="notificationBtn" aria-label="Notifications"><span>♢</span><i class="notification-badge">2</i></button>
+          <div class="user-menu"><div class="avatar">CZ</div><span>Control room</span><span class="chevron">⌄</span></div>
+        </div>
+      </header>
+
+      <div class="page-wrap">
+        <section class="page-heading">
+          <div>
+            <div class="eyebrow"><span class="eyebrow-line"></span> SMART VEHICLES / OPERATIONS</div>
+            <h1>Green corridor <em>command center</em></h1>
+            <p>Predict traffic, clear the path, and move every emergency vehicle with confidence.</p>
+          </div>
+          <div class="heading-actions">
+            <div class="timestamp"><span class="tiny-green"></span> Last synced <strong id="syncTime">just now</strong></div>
+            <button class="secondary-button" id="exportBtn"><span>⇩</span> Export briefing</button>
+          </div>
+        </section>
+
+        <section class="metric-grid" aria-label="Operational summary">
+          <article class="metric-card featured"><div class="metric-meta"><span>ACTIVE CORRIDORS</span><span class="metric-icon green">⌁</span></div><div class="metric-value">01</div><div class="metric-foot"><span class="trend up">↗ 100%</span><span>since last hour</span></div></article>
+          <article class="metric-card"><div class="metric-meta"><span>AVG. TIME SAVED</span><span class="metric-icon purple">◷</span></div><div class="metric-value">12<span>m</span> 40<span>s</span></div><div class="metric-foot"><span class="trend up">↗ 8.4%</span><span>vs. standard route</span></div></article>
+          <article class="metric-card"><div class="metric-meta"><span>SIGNALS PRIORITIZED</span><span class="metric-icon orange">◉</span></div><div class="metric-value">06</div><div class="metric-foot"><span class="trend neutral">— 0.0%</span><span>corridor coverage</span></div></article>
+          <article class="metric-card"><div class="metric-meta"><span>CORRIDOR COVERAGE</span><span class="metric-icon blue">↔</span></div><div class="metric-value">3.8<span> km</span></div><div class="metric-foot"><span class="trend up">↗ 0.6 km</span><span>route optimized</span></div></article>
+        </section>
+
+        <section class="primary-grid">
+          <article class="panel map-panel">
+            <div class="panel-head">
+              <div><div class="section-kicker"><span class="live-ring"></span> LIVE CORRIDOR</div><h2>Emergency route overview</h2></div>
+              <div class="map-head-actions"><span class="map-tag">SIMULATION / PROTOTYPE DATA</span><button class="small-icon-button" id="mapExpand" aria-label="Expand map">⤢</button></div>
+            </div>
+            <div class="map-canvas" id="mapCanvas">
+              <div class="map-grid-lines"></div>
+              <div class="map-water water-one"></div><div class="map-water water-two"></div>
+              <div class="road road-h road-h1"></div><div class="road road-h road-h2"></div><div class="road road-h road-h3"></div>
+              <div class="road road-v road-v1"></div><div class="road road-v road-v2"></div><div class="road road-v road-v3"></div>
+              <div class="road diagonal d1"></div><div class="road diagonal d2"></div>
+              <svg class="route-svg" viewBox="0 0 1000 460" preserveAspectRatio="none" aria-label="Simulated route map">
+                <path class="route-shadow" d="M112 350 L262 295 L424 328 L585 215 L752 172 L898 104" />
+                <path class="route-line" d="M112 350 L262 295 L424 328 L585 215 L752 172 L898 104" />
+                <path class="route-alt" d="M112 350 L282 385 L438 393 L615 345 L770 246 L898 104" />
+              </svg>
+              <div class="map-location hospital"><span class="location-pin medical">+</span><div><strong>City Hospital</strong><small>Origin</small></div></div>
+              <div class="map-location destination"><span class="location-pin dest">◆</span><div><strong>North District</strong><small>Destination</small></div></div>
+              <div class="intersection j-a"><span class="intersection-dot green-dot"></span><label>J-A</label></div>
+              <div class="intersection j-b"><span class="intersection-dot green-dot"></span><label>J-B</label></div>
+              <div class="intersection j-c"><span class="intersection-dot green-dot"></span><label>J-C</label></div>
+              <div class="intersection j-d"><span class="intersection-dot amber-dot"></span><label>J-D</label></div>
+              <div class="vehicle-marker" id="vehicleMarker"><span class="vehicle-pulse"></span><span class="vehicle-icon">✚</span><div class="vehicle-tooltip"><strong>AMB-07 · Ambulance</strong><small>En route · 02:18 ETA</small></div></div>
+              <div class="map-legend"><span><i class="legend-route"></i> Recommended</span><span><i class="legend-alt"></i> Alternative</span><span><i class="legend-signal"></i> Priority signal</span></div>
+              <div class="map-controls"><button aria-label="Zoom in">+</button><button aria-label="Zoom out">−</button><button aria-label="Locate vehicle">⌾</button></div>
+            </div>
+            <div class="map-footer"><div class="route-summary"><span class="route-status-dot"></span><div><strong>Corridor active</strong><small>City Hospital <b>→</b> North District</small></div></div><div class="route-stats"><div><small>ETA</small><strong id="mapEta">02:18</strong></div><div><small>DISTANCE</small><strong id="mapDistance">3.8 km</strong></div><div><small>TRAFFIC</small><strong class="text-green" id="mapTraffic">Low</strong></div></div><button class="primary-button compact" id="recalcBtn">↻ Recalculate route</button></div>
+          </article>
+
+          <article class="panel request-panel">
+            <div class="panel-head"><div><div class="section-kicker"><span class="section-dot orange-dot"></span> NEW REQUEST</div><h2>Create emergency request</h2></div><span class="form-step">01 / 02</span></div>
+            <form id="requestForm">
+              <label class="field-label">Vehicle type<select id="vehicleType"><option value="Ambulance">Ambulance</option><option value="Fire Truck">Fire Truck</option><option value="Police Vehicle">Police Vehicle</option></select></label>
+              <div class="two-fields"><label class="field-label">Source<div class="input-icon-wrap"><span>⌖</span><input id="source" value="City Hospital" /></div></label><label class="field-label">Destination<div class="input-icon-wrap"><span>⌾</span><input id="destination" value="North District" /></div></label></div>
+              <label class="field-label">Emergency priority<div class="priority-options"><label class="priority-option selected"><input type="radio" name="priority" value="Critical" checked /><span class="priority-dot critical"></span><span>Critical</span><b>90</b></label><label class="priority-option"><input type="radio" name="priority" value="High" /><span class="priority-dot high"></span><span>High</span><b>70</b></label><label class="priority-option"><input type="radio" name="priority" value="Normal" /><span class="priority-dot normal"></span><span>Normal</span><b>40</b></label></div></label>
+              <div class="form-callout"><span class="callout-icon">i</span><p>Priority score is simulated from the selected emergency level. Physical signal control is not connected.</p></div>
+              <button class="primary-button full" type="submit"><span>+</span> Create emergency request <b>↗</b></button>
+            </form>
+            <div class="request-footer"><span class="status-check">✓</span> Ready to dispatch a simulated corridor</div>
+          </article>
+        </section>
+
+        <section class="secondary-grid">
+          <article class="panel traffic-panel">
+            <div class="panel-head"><div><div class="section-kicker"><span class="section-dot purple-dot"></span> AI PREDICTION</div><h2>Traffic intelligence</h2></div><button class="text-button" id="predictScroll">Open predictor <span>↗</span></button></div>
+            <div class="traffic-content"><div class="chart-side"><div class="chart-current"><strong id="trafficLevel">LOW</strong><span>predicted congestion</span></div><div class="chart-wrap"><svg viewBox="0 0 560 180" preserveAspectRatio="none" class="traffic-chart"><defs><linearGradient id="areaFill" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#9af5cb" stop-opacity=".23"/><stop offset="1" stop-color="#9af5cb" stop-opacity="0"/></linearGradient></defs><path class="chart-area" d="M0 140 C30 136 45 112 75 120 S118 144 146 105 S185 75 214 100 S257 128 281 84 S331 53 356 76 S405 115 428 64 S477 52 500 67 S530 49 560 22 L560 180 L0 180 Z"/><path class="chart-line" d="M0 140 C30 136 45 112 75 120 S118 144 146 105 S185 75 214 100 S257 128 281 84 S331 53 356 76 S405 115 428 64 S477 52 500 67 S530 49 560 22"/><circle cx="428" cy="64" r="5" class="chart-point"/><circle cx="560" cy="22" r="5" class="chart-point current"/></svg><div class="chart-labels"><span>08:00</span><span>10:00</span><span>12:00</span><span>14:00</span><span>16:00</span><span>Now</span></div></div></div><div class="prediction-mini"><div class="prediction-value"><span id="predictedMinutes">08</span><small>min</small></div><span>estimated travel time</span><div class="mini-divider"></div><div class="prediction-row"><span>Avg. speed</span><strong id="speedReadout">42 km/h</strong></div><div class="prediction-row"><span>Vehicle density</span><strong id="densityReadout">28%</strong></div></div></div>
+            <div class="traffic-action-row"><div class="traffic-chips"><span class="traffic-chip low"><i></i> Low 0–35</span><span class="traffic-chip medium"><i></i> Medium 36–60</span><span class="traffic-chip high"><i></i> High 61–80</span><span class="traffic-chip severe"><i></i> Severe 81+</span></div><button class="secondary-button small" id="predictBtn">Run prediction <span>→</span></button></div>
+          </article>
+
+          <article class="panel route-panel">
+            <div class="panel-head"><div><div class="section-kicker"><span class="section-dot green-dot"></span> ROUTE OPTIMIZER</div><h2>Recommended routes</h2></div><span class="ai-badge">AI RANKED</span></div>
+            <div class="route-list" id="routeList">
+              <div class="route-row recommended"><div class="route-rank">01</div><div class="route-copy"><strong>Hospital → A → B → C → North District</strong><span><i class="route-line-icon green-line"></i>Clear corridor · 6 priority signals</span></div><div class="route-time"><strong>08 min</strong><span>3.8 km</span></div><span class="best-pill">BEST</span></div>
+              <div class="route-row"><div class="route-rank">02</div><div class="route-copy"><strong>Hospital → A → D → E → North District</strong><span><i class="route-line-icon amber-line"></i>Moderate traffic · 4 priority signals</span></div><div class="route-time"><strong>11 min</strong><span>4.2 km</span></div></div>
+              <div class="route-row"><div class="route-rank">03</div><div class="route-copy"><strong>Hospital → F → G → C → North District</strong><span><i class="route-line-icon red-line"></i>High traffic · 3 priority signals</span></div><div class="route-time"><strong>14 min</strong><span>4.7 km</span></div></div>
+            </div>
+            <button class="route-optimizer-button" id="findRouteBtn">Find best route <span>↗</span></button>
+          </article>
+        </section>
+
+        <section class="bottom-grid">
+          <article class="panel signal-panel">
+            <div class="panel-head"><div><div class="section-kicker"><span class="section-dot orange-dot"></span> SIGNAL SIMULATION</div><h2>Priority intersections</h2></div><div class="signal-status"><span class="pulse-dot"></span><strong id="corridorStatus">GREEN CORRIDOR ACTIVE</strong></div></div>
+            <div class="signal-table-head"><span>INTERSECTION</span><span>MODE</span><span>SIGNAL</span><span>HOLD UNTIL</span><span>STATUS</span></div>
+            <div class="signal-row"><div class="intersection-name"><span class="table-junction green">A</span><div><strong>Junction A</strong><small>Hospital approach</small></div></div><span class="mode-pill priority">Priority</span><span class="signal-light green-light"><i></i>GREEN</span><strong class="hold-time">00:42</strong><span class="table-status ready">Ready</span></div>
+            <div class="signal-row"><div class="intersection-name"><span class="table-junction green">B</span><div><strong>Junction B</strong><small>Central avenue</small></div></div><span class="mode-pill priority">Priority</span><span class="signal-light green-light"><i></i>GREEN</span><strong class="hold-time">01:18</strong><span class="table-status ready">Ready</span></div>
+            <div class="signal-row"><div class="intersection-name"><span class="table-junction green">C</span><div><strong>Junction C</strong><small>North connector</small></div></div><span class="mode-pill priority">Priority</span><span class="signal-light green-light"><i></i>GREEN</span><strong class="hold-time">01:56</strong><span class="table-status ready">Ready</span></div>
+            <div class="signal-row"><div class="intersection-name"><span class="table-junction amber">D</span><div><strong>Junction D</strong><small>Alternative route</small></div></div><span class="mode-pill standard">Standby</span><span class="signal-light red-light"><i></i>RED</span><strong class="hold-time">—</strong><span class="table-status standby">Standby</span></div>
+            <div class="signal-footer"><span><i class="mini-green-dot"></i> Route signals are simulated and held green until the vehicle passes.</span><button class="text-button" id="simulatePassBtn">Simulate vehicle pass <span>→</span></button></div>
+          </article>
+          <aside class="panel action-panel"><div class="action-panel-top"><span class="section-kicker"><span class="section-dot blue-dot"></span> QUICK ACTION</span><span class="shortcut">⌘ K</span></div><h3>Need to adapt the corridor?</h3><p>Trigger a traffic event to see route recalculation and signal reprioritization in action.</p><button class="secondary-button full" id="trafficEventBtn">Trigger traffic event <span>⚡</span></button><div class="action-note"><span>i</span> Demo-safe · no physical signals are connected</div></aside>
+        </section>
+
+        <section class="predictor-panel panel" id="predictorPanel">
+          <div class="panel-head"><div><div class="section-kicker"><span class="section-dot purple-dot"></span> TRAFFIC PREDICTION INPUTS</div><h2>Test the local AI predictor</h2></div><span class="model-tag">RANDOM FOREST / LOCAL MODEL</span></div>
+          <div class="predictor-form"><label class="field-label">Traffic density (%)<input type="range" min="0" max="100" value="28" id="densityRange"><output id="densityOutput">28%</output></label><label class="field-label">Average speed (km/h)<input type="range" min="5" max="80" value="42" id="speedRange"><output id="speedOutput">42 km/h</output></label><label class="field-label">Vehicles on segment<input type="number" min="1" value="26" id="vehicleCount"></label><label class="field-label">Road length (km)<input type="number" min="1" step="0.1" value="3.8" id="roadLength"></label><button class="primary-button" id="predictFormBtn">Predict traffic <span>→</span></button></div>
+        </section>
+
+        <footer class="page-footer"><span>FLOW<span>SYNC</span> · AI-based green corridor management</span><span>Built for Smart India Hackathon 2026 · Team Code Zen · ID 864</span></footer>
+      </div>
+    </main>
+  </div>
+  <div class="toast" id="toast"><span class="toast-icon">✓</span><span id="toastText">Action completed</span></div>
+  <script src="app.js">  </script>
+</body>
+</html>
